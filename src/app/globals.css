@@ -1,26 +1,135 @@
 @import "tailwindcss";
 
+@theme {
+  --color-paper-cream: #FDF6E3;
+  --color-paper-white: #FEFEFE;
+  --color-paper-aged: #F5F0E1;
+  --color-ink-primary: #2D2A26;
+  --color-ink-secondary: #5C574F;
+  --color-ink-muted: #8A8479;
+  --color-accent-gold: #D4AF37;
+  --color-accent-copper: #B87333;
+  --color-border-light: #E8E4DA;
+  
+  --font-family-heading: 'Archivo', sans-serif;
+  --font-family-body: 'Space Grotesk', sans-serif;
+  --font-family-nepali: 'Noto Sans Devanagari', sans-serif;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --paper-cream: #FDF6E3;
+  --paper-white: #FEFEFE;
+  --paper-aged: #F5F0E1;
+  --ink-primary: #2D2A26;
+  --ink-secondary: #5C574F;
+  --ink-muted: #8A8479;
+  --accent-gold: #D4AF37;
+  --accent-copper: #B87333;
+  --border-light: #E8E4DA;
+  --shadow-soft: 0 4px 20px rgba(45, 42, 38, 0.08);
+  --shadow-paper: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --shadow-hover: 0 8px 30px rgba(45, 42, 38, 0.12);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@font-face {
+  font-family: 'Archivo';
+  font-display: swap;
+  src: url('https://fonts.gstatic.com/s/archivo/v19/k3kQo8UDI-1M0wlSV9XAw1o5jPQkT3kVhqU.woff2') format('woff2');
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@font-face {
+  font-family: 'Space Grotesk';
+  font-display: swap;
+  src: url('https://fonts.gstatic.com/s/spacegrotesk/v16/V8mQoQDjQSk3to9Kyewrfo6-PgVwnP6O.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Noto Sans Devanagari';
+  font-display: swap;
+  src: url('https://fonts.gstatic.com/s/notosansdevanagari/v12/pe0pMIuPIYBCpEV5eFdCBfe5.woff2') format('woff2');
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-family-body);
+  background-color: var(--paper-cream);
+  color: var(--ink-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background-color: var(--accent-gold);
+  color: white;
+}
+
+.paper-texture {
+  background-image: 
+    linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.02) 50%, transparent 100%),
+    linear-gradient(transparent 0%, rgba(0,0,0,0.01) 50%, transparent 100%);
+  background-size: 4px 4px;
+}
+
+.paper-card {
+  background: var(--paper-white);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-paper);
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.paper-card:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+}
+
+.ink-text {
+  color: var(--ink-primary);
+}
+
+.ink-muted {
+  color: var(--ink-muted);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.5s ease-out forwards;
+}
+
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
