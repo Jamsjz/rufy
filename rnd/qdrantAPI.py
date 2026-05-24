@@ -5,6 +5,7 @@ import random
 import uuid
 import numpy as np
 from model import ft
+from module import get_paragraph_vector
 
 # client = QdrantClient(url="http://localhost:6333")
 client = QdrantClient(":memory:")
@@ -17,61 +18,56 @@ if not client.collection_exists(COLLECTION_NAME):
     )
 
 
-class qdrantAPI:
-    @staticmethod
-    def store_vector(word: str, vector: list):
-        """
-        Stores a word and its vector inside Qdrant.
-        """
-        point_id = str(uuid.uuid4())
+def store_vector(word: str, vector: list):
+    """
+    Stores a word and its vector inside Qdrant.
+    """
+    point_id = str(uuid.uuid4())
 
-        client.upsert(
-            collection_name=COLLECTION_NAME,
-            points=[
-                PointStruct(
-                    id=point_id,
-                    vector=vector if isinstance(vector, list) else vector.tolist(),
-                    payload={"word": word},
-                )
-            ],
-        )
+    client.upsert(
+        collection_name=COLLECTION_NAME,
+        points=[
+            PointStruct(
+                id=point_id,
+                vector=vector if isinstance(vector, list) else vector.tolist(),
+                payload={"word": word},
+            )
+        ],
+    )
 
-    @staticmethod
-    def store_word(word: str):
-        word_vector = ft.get_word_vector(word)
-        qdrantAPI.store_vector(word, word_vector)
+def store_word(word: str):
+    word_vector = ft.get_word_vector(word)
+    store_vector(word, word_vector)
 
-    @staticmethod
-    def get_topk_words(ctx: str, k: int = 10):
-        """
-        ctx is a multiline paragraph.
-        Retrieves the top k most similar words from Qdrant.
-        """
-        vctx = get_paragraph_vector(ctx)
+def get_topk_words(ctx: str, k: int = 10):
+    """
+    ctx is a multiline paragraph.
+    Retrieves the top k most similar words from Qdrant.
+    """
+    vctx = get_paragraph_vector(ctx)
 
-        # Query Qdrant using the paragraph vector
-        search_result = client.query_points(
-            collection_name=COLLECTION_NAME, query=vctx, limit=k, with_payload=True
-        ).points
+    # Query Qdrant using the paragraph vector
+    search_result = client.query_points(
+        collection_name=COLLECTION_NAME, query=vctx, limit=k, with_payload=True
+    ).points
 
-        top_k_words = [point.payload["word"] for point in search_result]
-        return top_k_words
+    top_k_words = [point.payload["word"] for point in search_result]
+    return top_k_words
 
-    @staticmethod
-    def get_word_vector(word: str):
-        word_filter = models.Filter(
-            must=[
-                models.FieldCondition(key="word", match=models.MatchValue(value=word))
-            ]
-        )
+def get_word_vector(word: str):
+    word_filter = models.Filter(
+        must=[
+            models.FieldCondition(key="word", match=models.MatchValue(value=word))
+        ]
+    )
 
-        result = client.query_points(
-            collection_name=COLLECTION_NAME,
-            query_filter=word_filter,
-            limit=1,
-            with_vectors=True,
-        ).points
+    result = client.query_points(
+        collection_name=COLLECTION_NAME,
+        query_filter=word_filter,
+        limit=1,
+        with_vectors=True,
+    ).points
 
-        if result:
-            return result[0].vector
-        return None
+    if result:
+        return result[0].vector
+    return None

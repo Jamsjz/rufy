@@ -17,9 +17,9 @@ all = pd.read_csv("words.csv")
 common = pd.read_csv("common_words_in_poem.csv")
 
 
-def get_topk_rhyming_words(word: str, k: int = 10):
+def get_topk_rhyming_words(word: str, k: int = 10, wordlist=common.words):
     rhyming_words = []
-    for wd in common.words:
+    for wd in wordlist:
         score = rhyme_score(word, wd, mode="loose", strict_alignment=True)
         if score > 3.5:
             rhyming_words.append({wd: score})
@@ -73,3 +73,13 @@ def get_paragraph_vector(paragraph: str):
     vctx = np.mean(vectors, axis=0)
 
     return vctx.tolist()
+
+def get_topk_rhyming_words_with_ctx(w: str,ctx: str, k: int = 10, wordlist=common.words):
+    rwords = get_topk_rhyming_words(w, k, wordlist)
+    ctxvec = get_paragraph_vector(ctx)
+    edict = {}
+    for word in rwords:
+        score =get_similarity_score(ctx, word)
+        edict[word] = score
+
+    return list(dict(sorted(edict.items(), key=lambda x: x[1], reverse=True)).keys())
