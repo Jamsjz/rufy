@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Complete rhyme detection for Devanagari (Nepali/Sanskrit)
+Complete rhyme detection for Devanagari (Hindi/Sanskrit)
 with fixed syllable segmentation and all advanced features.
 """
 
