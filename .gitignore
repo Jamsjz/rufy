@@ -9,13 +9,16 @@
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
+/**/__pycache__/
 
 # testing
 /coverage
-
+/rnd/vecs.txt
 # next.js
 /.next/
 /out/
+/rnd/cc.ne.300.bin
+/rnd/cc.ne.300.vec
 
 # production
 /build
